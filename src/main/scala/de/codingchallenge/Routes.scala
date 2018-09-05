@@ -8,8 +8,10 @@ import akka.stream.ActorMaterializer
 import akka.util.ByteString
 import de.codingchallenge.configuration.Environment
 import com.typesafe.scalalogging.LazyLogging
+import de.codingchallenge.services.ArticleExportService
 
-class Routes(actorSystem: ActorSystem,
+class Routes(articleExportService: ArticleExportService,
+             actorSystem: ActorSystem,
              actorMaterializer: ActorMaterializer,
              environment: Environment)
   extends LazyLogging {
@@ -42,14 +44,16 @@ class Routes(actorSystem: ActorSystem,
   val exportRoute: Route =
       path("articles") {
         get {
-          complete(StatusCodes.ServiceUnavailable)
+          println("test")
+          complete(articleExportService.exportArticles())
+          complete(StatusCodes.Accepted)
         }
       }
 
   val routes: Route =
       pathPrefix("inoio-coding-challenge") {
         serviceRoutes
-      } ~ pathPrefix("export" / "articles") {
+      } ~ pathPrefix("inoio-coding-challenge" / "export") {
          exportRoute
       } ~ serviceRoutes
 

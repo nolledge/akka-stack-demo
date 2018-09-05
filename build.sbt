@@ -46,7 +46,8 @@ libraryDependencies ++= compileDependencies
 
 lazy val testDependencies = Seq(
   "com.typesafe.akka" %% "akka-http-testkit" % "10.0.5",
-  "org.scalatest" %% "scalatest" % "3.0.1",
-  "org.scalamock" %% "scalamock-scalatest-support" % "3.5.0"
+  "org.mockito" % "mockito-inline" % "2.20.1",
+  "org.scalatest" %% "scalatest" % "3.0.1"
+//  "org.scalamock" %% "scalamock-scalatest-support" % "3.5.0"
 ).map(_ % "test")
 libraryDependencies ++= testDependencies

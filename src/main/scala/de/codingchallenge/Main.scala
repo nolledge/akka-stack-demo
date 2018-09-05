@@ -18,6 +18,7 @@ import fr.davit.akka.http.prometheus.scaladsl.server.HttpMetricsDirectives._
 import io.prometheus.client.hotspot.DefaultExports
 
 object Main extends App with DependencyInjectionModule with LazyLogging  {
+
   implicit lazy val actorSystem = ActorSystem("system")
   implicit lazy val actorMaterializer = ActorMaterializer()
   implicit lazy val executionContext = actorSystem.dispatcher
