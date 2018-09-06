@@ -49,10 +49,3 @@ Preise sind mit einer oder zwei Nachkommastellen und "." als Trenner zwischen Eu
   - lines bezieht sich auf die Anzahl der zugrundeliegenden Artikel
 - Response Code: 200 wenn alle Einträge erfolgreich verarbeitet werden konnten
 
-### Test Service
-- Download link: https://cloud.inoio.de/s/SnLlMwp4XEWlDe9/download
-- Starten: `java -jar coding-challenge.jar`
-
-### Entwicklungsumgebung
-
-Schreibe den Code in der Sprache in der du dich wohl fühlst und so, dass du ihn für "production ready" hällst.
