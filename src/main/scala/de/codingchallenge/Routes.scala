@@ -44,9 +44,9 @@ class Routes(articleExportService: ArticleExportService,
   val exportRoute: Route =
       path("articles") {
         get {
-          println("test")
-          complete(articleExportService.exportArticles())
-          complete(StatusCodes.Accepted)
+          onSuccess(articleExportService.exportArticles()) { _ =>
+            complete(StatusCodes.NoContent)
+          }
         }
       }
 

@@ -3,6 +3,7 @@ package de.codingchallenge.services
 import akka.NotUsed
 import akka.http.scaladsl.model.HttpResponse
 import akka.stream.Materializer
+import akka.stream.contrib.AccumulateWhileUnchanged
 import akka.stream.scaladsl.{Sink, Source}
 import com.typesafe.scalalogging.LazyLogging
 import de.codingchallenge.models.{Article, ProductExport}
@@ -23,16 +24,15 @@ class ArticleExportService(
     articleRepository
       .getArticles(productsSize)
       .filter(_.stock > 0)
-      .groupBy(1, _.productId)
-      .map(a => a -> a.stock)
-      .reduce[(Article, Int)] {
+      .map(a => (a, a.stock))
+      .via(new AccumulateWhileUnchanged[(Article, Int), String](_._1.productId))
+      .map(_.reduce[(Article, Int)] {
         case ((a1, c1), (a2, c2)) if a1.price < a2.price => (a1, c1 + c2)
         case ((a1, c1), (a2, c2)) if a1.price > a2.price => (a2, c1 + c2)
         case ((a1, c1), (_, c2)) => (a1, c1 + c2)
-      }
-      .mergeSubstreams
+      })
       .map { case (article, stockSum) =>
-        logger.debug(s"Reduced to article: $article and stockSum: $stockSum")
+        logger.info(s"Reduced to article: $article and stockSum: $stockSum")
         ProductExport(article, stockSum) }
   ), productsSize)
 

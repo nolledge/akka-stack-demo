@@ -6,12 +6,13 @@ import akka.http.scaladsl.model.HttpEntity.Chunked
 import akka.http.scaladsl.model._
 import akka.stream.scaladsl.{Flow, Source}
 import akka.util.ByteString
+import com.typesafe.scalalogging.LazyLogging
 import de.codingchallenge.csv.CsvOps._
 import de.codingchallenge.models.ProductExport
 
 import scala.concurrent.Future
 
-class ProductExportRepository(actorSystem: ActorSystem) {
+class ProductExportRepository(actorSystem: ActorSystem) extends LazyLogging {
 
   val headerLine = "produktId|name|beschreibung|preis|summeBestand\n"
 
