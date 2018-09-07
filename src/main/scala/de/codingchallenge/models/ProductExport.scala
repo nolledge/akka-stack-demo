@@ -12,7 +12,7 @@ object ProductExport{
   def apply(a: Article, stockSum: Int): ProductExport  = new ProductExport(
     productId = a.productId,
     name = a.name,
-    description = a.description,
+    description = a.description.getOrElse(""),
     price = a.price,
     stockSum = stockSum
   )

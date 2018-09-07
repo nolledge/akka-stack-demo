@@ -31,7 +31,7 @@ class ArticleExportService(
    *
    * @return
    */
-  def exportArticles(): Future[HttpResponse] = productExportRepository.add(Source.fromGraph(
+  def exportArticles(): Future[HttpResponse] = productExportRepository.add(Source.fromGraph[ProductExport, NotUsed](
     articleRepository
       .getArticles(productsSize)
       .filter(_.stock > 0)

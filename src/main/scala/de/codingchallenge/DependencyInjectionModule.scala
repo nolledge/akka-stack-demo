@@ -12,8 +12,11 @@ import de.codingchallenge.repositories.{ArticleRepository, ProductExportReposito
 import de.codingchallenge.services.ArticleExportService
 import io.prometheus.client.CollectorRegistry
 
+import scala.concurrent.ExecutionContext
+
 trait DependencyInjectionModule extends LoggingModule  {
 
+  implicit val ec: ExecutionContext = ExecutionContext.global
   lazy val environment = wire[Environment]
 
   lazy val routes = wire[Routes]

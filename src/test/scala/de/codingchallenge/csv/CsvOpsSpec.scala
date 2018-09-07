@@ -9,7 +9,6 @@ class CsvOpsSpec extends WordSpec with MustMatchers{
 
   case class CsvTestData(s: String, d: Double)
   implicit val csvReads: CsvColumnReads[CsvTestData] = (columns: Seq[String]) => {
-    println(columns)
     Try{(columns.head, columns(1).toDouble)} match{
       case Success((s: String, d: Double)) => Some(CsvTestData(s,d))
       case _ => None

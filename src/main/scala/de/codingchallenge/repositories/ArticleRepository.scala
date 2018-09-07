@@ -13,13 +13,13 @@ import de.codingchallenge.models.Article
 
 class ArticleRepository(actorSystem: ActorSystem) extends LazyLogging{
 
-  implicit val as = actorSystem
+  private implicit val as = actorSystem
+
   // might be a good idea to make that value configurable
   val baseUrl: String = "http://localhost:8080"
 
-  lazy val connection = Http().superPool[NotUsed]()
 
-  def getArticles(limit: Int): Source[Article, _] = Source.fromFuture(
+  def getArticles(limit: Int): Source[Article, NotUsed] = Source.fromFuture(
     Http()
     .singleRequest(HttpRequest(uri = s"$baseUrl/articles/$limit"))
   ).flatMapConcat(res =>
@@ -34,7 +34,7 @@ class ArticleRepository(actorSystem: ActorSystem) extends LazyLogging{
   val articleFlow: Flow[ByteString, Article, NotUsed] = Flow[ByteString]
     .map(_.utf8String)
     .drop(1)
-    .map{e => logger.info(s"CSV string: $e"); e}
+    .map{e => logger.info(s"Parsing CSV string: $e"); e}
     .map(_.csvToOptOf[Article])
     .map{
       case Some(a) => a
