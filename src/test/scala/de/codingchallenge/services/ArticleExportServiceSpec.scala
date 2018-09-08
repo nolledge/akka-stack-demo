@@ -18,6 +18,7 @@ import scala.concurrent.{Await, Future}
 class ArticleExportServiceSpec extends BaseSpec with AkkaSpec {
 
   trait TestSetup extends ProductExportFixture with ArticleFixture {
+    val productsSize = 10
     val articleRepositoryMock = mock[ArticleRepository]
     val productExportRepositoryMock = mock[ProductExportRepository]
     val service =
@@ -32,7 +33,7 @@ class ArticleExportServiceSpec extends BaseSpec with AkkaSpec {
       when(productExportRepositoryMock.add(any(), any()))
         .thenReturn(Future.successful(HttpResponse()))
 
-      Await.result(service.exportArticles(), 5.second)
+      Await.result(service.exportArticles(productsSize), 5.second)
       val sourceCaptor: ArgumentCaptor[Source[ProductExport, NotUsed]] =
         ArgumentCaptor.forClass(classOf[Source[ProductExport, NotUsed]])
       verify(productExportRepositoryMock).add(sourceCaptor.capture(), any())
@@ -45,7 +46,7 @@ class ArticleExportServiceSpec extends BaseSpec with AkkaSpec {
       when(productExportRepositoryMock.add(any(), any()))
         .thenReturn(Future.successful(HttpResponse()))
 
-      Await.result(service.exportArticles(), 5.second)
+      Await.result(service.exportArticles(productsSize), 5.second)
       val sourceCaptor: ArgumentCaptor[Source[ProductExport, NotUsed]] =
         ArgumentCaptor.forClass(classOf[Source[ProductExport, NotUsed]])
       verify(productExportRepositoryMock).add(sourceCaptor.capture(), any())
@@ -60,7 +61,7 @@ class ArticleExportServiceSpec extends BaseSpec with AkkaSpec {
       when(productExportRepositoryMock.add(any(), any()))
         .thenReturn(Future.successful(HttpResponse()))
 
-      Await.result(service.exportArticles(), 5.second)
+      Await.result(service.exportArticles(productsSize), 5.second)
       val sourceCaptor: ArgumentCaptor[Source[ProductExport, NotUsed]] =
         ArgumentCaptor.forClass(classOf[Source[ProductExport, NotUsed]])
       verify(productExportRepositoryMock).add(sourceCaptor.capture(), any())
@@ -78,7 +79,7 @@ class ArticleExportServiceSpec extends BaseSpec with AkkaSpec {
       when(productExportRepositoryMock.add(any(), any()))
         .thenReturn(Future.successful(HttpResponse()))
 
-      Await.result(service.exportArticles(), 5.second)
+      Await.result(service.exportArticles(productsSize), 5.second)
       val sourceCaptor: ArgumentCaptor[Source[ProductExport, NotUsed]] =
         ArgumentCaptor.forClass(classOf[Source[ProductExport, NotUsed]])
       verify(productExportRepositoryMock).add(sourceCaptor.capture(), any())

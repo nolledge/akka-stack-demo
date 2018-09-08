@@ -18,8 +18,6 @@ class ArticleExportService(
 ) extends LazyLogging {
   implicit val m: Materializer = mat
 
-  val productsSize: Int = 20
-
   /**
    * Streams articles to generate a product export.
    * Filters unavailable articles
@@ -31,7 +29,7 @@ class ArticleExportService(
    *
    * @return
    */
-  def exportArticles(): Future[HttpResponse] = productExportRepository.add(Source.fromGraph[ProductExport, NotUsed](
+  def exportArticles(productsSize: Int): Future[HttpResponse] = productExportRepository.add(Source.fromGraph[ProductExport, NotUsed](
     articleRepository
       .getArticles(productsSize)
       .filter(_.stock > 0)
