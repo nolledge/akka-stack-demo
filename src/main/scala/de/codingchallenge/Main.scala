@@ -51,7 +51,7 @@ object Main extends App with DependencyInjectionModule with LazyLogging  {
 
   bindingFuture.onComplete {
     case Success(_) =>
-      println(s"Server for started at localhost:8080")
+      println(s"Server for started at localhost:9080")
     case Failure(cause) =>
       println(s"Server failed to start", cause)
   }

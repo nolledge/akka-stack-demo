@@ -3,9 +3,9 @@ package de.codingchallenge.repositories
 import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.HttpEntity.Chunked
 import akka.http.scaladsl.model._
 import akka.stream.scaladsl.{Flow, Source}
+import akka.stream.{ActorMaterializer, Materializer}
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import de.codingchallenge.csv.CsvOps._
@@ -16,6 +16,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ProductExportRepository(actorSystem: ActorSystem)(implicit ec: ExecutionContext) extends LazyLogging {
 
   private implicit val as: ActorSystem = actorSystem
+  private implicit val mat: Materializer = ActorMaterializer()
 
   val headerLine = "produktId|name|beschreibung|preis|summeBestand"
 
@@ -28,27 +29,25 @@ class ProductExportRepository(actorSystem: ActorSystem)(implicit ec: ExecutionCo
       .intersperse("\n")
       .map(ByteString.apply)
 
-    // it did not work with charset information
-    val entity = Chunked.fromData(
-      ContentType.WithMissingCharset(MediaTypes.`text/csv`),
-      sourceWithHeader
-    )
-
+    /**
+     * Setting charset to utf8 results in HTTP.406
+     */
     Http()
       .singleRequest(
         HttpRequest(
           method = HttpMethods.PUT,
           uri = s"$baseUrl/products/$articlesSize",
-          entity = entity))
-      .map{res =>
+          entity = HttpEntity(ContentType.WithMissingCharset(MediaTypes.`text/csv`), sourceWithHeader)
+        ))
+      .map { res =>
         logger.info(s"Server responded with $res")
         res
       }
   }
 
   private val csvFlow: Flow[ProductExport, String, NotUsed] =
-    Flow.fromFunction{p =>
-      logger.info(s"processing export record $p")
+    Flow.fromFunction { p =>
+      logger.info(s"streaming export record $p")
       p.toCsvLine
     }
 

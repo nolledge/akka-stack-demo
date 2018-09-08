@@ -123,4 +123,14 @@ trait ArticleFixture {
       A-BdclQqXJ|P-BdclQqXJ|J YSQPS||22.28|49
       A-OHAeNBak|P-BdclQqXJ|JWWJVYSQPS C TRYDYX|pvAlqsw bnln ijxmdog roqumthtp lijqubnzz|97.32|24
       A-dclQqXJ7|P-BdclQqXJ|QPSU||77.34|17""".split("\n").map(_.trim)
+
+  val sampleGroup = Seq(
+    "A-C7PeyUjD|P-C7PeyUjD|MGT|swwfkg rzDawtwl vvvjebHd aenb aXkcwJyqsc|77.34|17",
+    "A-LPeyUjDg|P-C7PeyUjD|BMSNWL HFH||45.85|0",
+    "A-7PeyUjDg|P-C7PeyUjD|BMSNWL HFH||45.85|0",
+    "A-peyUjDgF|P-C7PeyUjD|SN L|hkqrz u wtwllbkxkl Hdwcpl|87.72|1",
+    "A-DYMxSQVE|P-C7PeyUjD|GTFB|wwfkgu zDawtw|84.12|7",
+    "A-PeyUjDgF|P-C7PeyUjD|SN L|hkqrz u wtwllbkxkl Hdwcpl|87.72|1"
+  )
+
 }

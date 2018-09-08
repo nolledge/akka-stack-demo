@@ -49,7 +49,7 @@ class ArticleExportServiceSpec extends BaseSpec with AkkaSpec{
       verify(productExportRepositoryMock).add(sourceCaptor.capture(), any())
       Await.result(sourceCaptor.getValue.runWith(Sink.head), 1.second) mustBe productExport
     }
-    "pass sample data as expected" in new TestSetup with ArticleFixture {
+    "contain only one entry per product" in new TestSetup with ArticleFixture {
 
       val articles = sampleData.map(_.csvToOptOf[Article].get).toList
       doReturn(Source(articles), Nil: _*)
@@ -61,9 +61,31 @@ class ArticleExportServiceSpec extends BaseSpec with AkkaSpec{
       Await.result(service.exportArticles(), 5.second)
       val sourceCaptor: ArgumentCaptor[Source[ProductExport, NotUsed]] = ArgumentCaptor.forClass(classOf[Source[ProductExport, NotUsed]])
       verify(productExportRepositoryMock).add(sourceCaptor.capture(), any())
-      Await.result(sourceCaptor.getValue.runWith(Sink.seq), 1.second).foreach { e =>
-        e mustBe a[ProductExport]
-      }
+      val results = Await.result(sourceCaptor.getValue.runWith(Sink.seq), 1.second)
+        results.foreach{
+          r => results.count(_.productId == r.productId) == 1
+        }
+    }
+    "find the cheapest element of a group" in new TestSetup with ArticleFixture {
+
+      val articles = sampleGroup.map(_.csvToOptOf[Article].get).toList
+      doReturn(Source(articles), Nil: _*)
+        .when(articleRepositoryMock)
+        .getArticles(100)
+      when(productExportRepositoryMock.add(any(), any()))
+        .thenReturn(Future.successful(HttpResponse()))
+
+      Await.result(service.exportArticles(), 5.second)
+      val sourceCaptor: ArgumentCaptor[Source[ProductExport, NotUsed]] = ArgumentCaptor.forClass(classOf[Source[ProductExport, NotUsed]])
+      verify(productExportRepositoryMock).add(sourceCaptor.capture(), any())
+      val results = Await.result(sourceCaptor.getValue.runWith(Sink.seq), 1.second)
+      results.head mustBe ProductExport(
+        productId = "P-C7PeyUjD",
+          name = "BMSNWL HFH",
+          description = "",
+      price = 45.85f,
+      stockSum = 26
+      )
     }
   }
 }

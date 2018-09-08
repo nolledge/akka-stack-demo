@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives.{pathPrefix, _}
 import akka.http.scaladsl.server._
-import akka.stream.ActorMaterializer
+import akka.stream.{ActorMaterializer, Materializer}
 import akka.util.ByteString
 import de.codingchallenge.configuration.Environment
 import com.typesafe.scalalogging.LazyLogging
@@ -16,8 +16,8 @@ class Routes(articleExportService: ArticleExportService,
              environment: Environment)
   extends LazyLogging {
 
-  implicit val ec = actorSystem
-  implicit val amaterializer = actorMaterializer
+  implicit val as: ActorSystem = actorSystem
+  implicit val mat: Materializer = actorMaterializer
 
   var on: Boolean = true
 
@@ -44,8 +44,8 @@ class Routes(articleExportService: ArticleExportService,
   val exportRoute: Route =
       path("articles") {
         get {
-          onSuccess(articleExportService.exportArticles()) { _ =>
-            complete(StatusCodes.NoContent)
+          onSuccess(articleExportService.exportArticles()) { res =>
+            complete(res)
           }
         }
       }

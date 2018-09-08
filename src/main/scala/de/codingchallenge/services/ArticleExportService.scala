@@ -18,7 +18,7 @@ class ArticleExportService(
 ) extends LazyLogging {
   implicit val m: Materializer = mat
 
-  val productsSize: Int = 100
+  val productsSize: Int = 20
 
   /**
    * Streams articles to generate a product export.
@@ -34,16 +34,20 @@ class ArticleExportService(
   def exportArticles(): Future[HttpResponse] = productExportRepository.add(Source.fromGraph[ProductExport, NotUsed](
     articleRepository
       .getArticles(productsSize)
-      .filter(_.stock > 0)
+//      .filter(_.stock > 0)
       .map(a => (a, a.stock))
       .via(new AccumulateWhileUnchanged[(Article, Int), String](_._1.productId))
-      .map(_.reduce[(Article, Int)] {
-        case ((a1, c1), (a2, c2)) if a1.price > a2.price => (a2, c1 + c2)
-        case ((a1, c1), (_, c2)) => (a1, c1 + c2)
-      })
+      .map(reduceTuples)
       .map { case (article, stockSum) =>
         logger.info(s"Reduced to article: $article and stockSum: $stockSum")
         ProductExport(article, stockSum) }
   ), productsSize)
 
+  def reduceTuples(t: Seq[(Article, Int)]): (Article, Int) = {
+    logger.info(s"reducing group $t")
+    t.reduceLeft[(Article, Int)] {
+      case ((a1, c1), (a2, c2)) if a1.price > a2.price => (a2, c1 + c2)
+      case ((a1, c1), (_, c2)) => (a1, c1 + c2)
+    }
+  }
 }
