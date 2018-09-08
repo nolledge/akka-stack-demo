@@ -34,7 +34,7 @@ class ArticleExportService(
   def exportArticles(): Future[HttpResponse] = productExportRepository.add(Source.fromGraph[ProductExport, NotUsed](
     articleRepository
       .getArticles(productsSize)
-//      .filter(_.stock > 0)
+      .filter(_.stock > 0)
       .map(a => (a, a.stock))
       .via(new AccumulateWhileUnchanged[(Article, Int), String](_._1.productId))
       .map(reduceTuples)
