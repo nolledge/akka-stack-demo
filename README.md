@@ -11,11 +11,11 @@ lowest price is used to label the prouct.
 
 ### Format of source
 - Delimiter: Pipe (|)
-- Row 1: Header / Spaltennamen
+- Row 1: Header / Column name
 - Columns: id|produktId|name|beschreibung|preis|bestand (String|String|String|String|Float|Int)
 
 ### Format of target
 - Trennzeichen: Pipe (|)
-- Row 1: Header / Spaltennamen
+- Row 1: Header / Column name
 - Columns: produktId|name|beschreibung|preis|summeBestand (String|String|String|Float|Int)
 
